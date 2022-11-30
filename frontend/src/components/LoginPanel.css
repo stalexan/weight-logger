@@ -1,0 +1,18 @@
+#login-panel-div {
+  width: 100%;
+  max-width: 330px;
+  padding: 60px 15px 15px 15px;
+  margin: auto;
+}
+
+#username-input {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#password-input {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

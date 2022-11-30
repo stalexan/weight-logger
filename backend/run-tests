@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Runs weight-log-server tests. Invoke from within the container that runs the server.
+* Usag: run-tests
+
+HEAD=/usr/bin/head
+MKTEMP=/bin/mktemp
+PSQL=/usr/bin/psql
+RM=/bin/rm
+TR=/usr/bin/tr
+
+function headerMessage() {
+    HEADER_LINE="##############################################"
+    echo "$HEADER_LINE"
+    echo "# $1"
+    echo "$HEADER_LINE"
+}
+
+# Trace
+#set -x
+
+# Create temp db name.
+export DB_NAME=wl_temp_$($HEAD -c 128 < /dev/random | $TR -dc [:lower:] | $HEAD -c 8)
+echo "Temp database name: ${DB_NAME}"
+
+# Test
+headerMessage "BEGIN: Testing"
+pytest -v --capture=no --exitfirst
+headerMessage "END: Testing"
+
+# Delete temp database and user.
+echo "Deleting temp database ${DB_NAME}"
+source /keys/keys-database.env && export PGPASSWORD="$POSTGRES_PASSWORD"
+$PSQL -q -h database -U postgres -c "DROP DATABASE ${DB_NAME};"
+$PSQL -q -h database -U postgres -c "DROP USER ${DB_NAME}_user;"

@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+
+""" Command line tool for weight-log administration. """
+
+# Copyright 2022 Sean Alexandre
+#
+# This file is part of Weight Logger.
+#
+# Weight Logger is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# Weight Logger is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# Weight Logger. If not, see <https://www.gnu.org/licenses/>.
+
+# Standard library imports
+from argparse import ArgumentParser
+import os
+import sys
+
+# Local imports
+from admin import Admin, AdminError
+from backend.admin import config_parser_for_add_user # type: ignore
+
+__version__ = "v1.0.1"
+
+def create_init_subparser(subparsers, admin: Admin) -> None:
+    """ Create subparser for init command. """
+
+    # Configure "init" command parser
+    init_parser = subparsers.add_parser('init', help='Initialize deployment')
+    init_parser.add_argument('env', type=str, choices=['dev', 'prod'])
+    init_parser.add_argument("--homepage", type=str, required=True, help='Weight Log homepage')
+    init_parser.add_argument("--network", type=str, help='Docker bridge network to join')
+    init_parser.set_defaults(func=admin.do_init)
+
+def create_docker_subparser(subparsers, admin: Admin) -> None:
+    """ Create subparser for docker commands. """
+
+    # Configure "docker build" command parser
+    docker_parser = subparsers.add_parser('docker',
+        help='Run docker commands to manage images and containers')
+    docker_subparsers = docker_parser.add_subparsers()
+    docker_build_subparser = docker_subparsers.add_parser('build', help='Build images')
+    docker_build_subparser.add_argument("--pull", action='store_true',
+        help='Pull new base images if available and do not use any cached images')
+    docker_build_subparser.set_defaults(func=admin.do_docker_build)
+
+    # Configure "docker list" command parser
+    docker_list_subparser = docker_subparsers.add_parser('list',
+        help='List images and containers')
+    docker_list_subparser.set_defaults(func=admin.do_docker_list)
+
+    # Configure "docker up" command parser
+    docker_up_subparser = docker_subparsers.add_parser('up', help='Start containers')
+    docker_up_subparser.set_defaults(func=admin.do_docker_up)
+
+    # Configure "docker down" command parser
+    docker_down_subparser = docker_subparsers.add_parser('down', help='Stop containers')
+    docker_down_subparser.set_defaults(func=admin.do_docker_down)
+
+    # Configure "docker rm" command parser
+    docker_rm_subparser = docker_subparsers.add_parser(
+        'rm', help='Delete deployment')
+    docker_rm_subparser.set_defaults(func=admin.do_docker_rm)
+
+def create_user_subparser(subparsers, admin: Admin) -> None:
+    """ Create subparser for user commands. """
+
+    # Configure "user list" command parser
+    user_parser = subparsers.add_parser('user', help='Manager users')
+    user_subparsers = user_parser.add_subparsers()
+    user_list_subparser = user_subparsers.add_parser('list', help='List users')
+    user_list_subparser.set_defaults(func=admin.do_user_list)
+
+    # Configure "user add" command parser
+    user_add_subparser = user_subparsers.add_parser('add', help='Add user')
+    config_parser_for_add_user(user_add_subparser)
+    user_add_subparser.set_defaults(func=admin.do_user_add)
+
+    # Configure "user delete" command parser
+    user_delete_subparser = user_subparsers.add_parser('delete', help='Delete user')
+    user_delete_subparser.add_argument("username")
+    user_delete_subparser.set_defaults(func=admin.do_user_delete)
+
+    # Configure "user chpasswd" command parser
+    user_chpasswd_subparser = user_subparsers.add_parser('chpasswd', help='Change user password')
+    user_chpasswd_subparser.add_argument("username")
+    user_chpasswd_subparser.set_defaults(func=admin.do_user_chpasswd)
+
+def create_db_subparser(subparsers, admin: Admin) -> None:
+    """ Create subparser for db commands. """
+
+    # Configure "db backup" command parser
+    db_parser = subparsers.add_parser('db', help='Manage database')
+    db_subparsers = db_parser.add_subparsers()
+    db_backup_subparser = db_subparsers.add_parser('backup', help='Backup database')
+    db_backup_subparser.add_argument(
+        "file", type=str, help='Destination file for backup')
+    db_backup_subparser.set_defaults(func=admin.do_db_backup)
+
+    # Configure "db restore" command parser
+    db_restore_subparser = db_subparsers.add_parser('restore', help='Restore database')
+    db_restore_subparser.add_argument(
+        "file", type=str, help='Source file for restore')
+    db_restore_subparser.set_defaults(func=admin.do_db_restore)
+
+# pylint: disable=missing-function-docstring
+def main() -> int:
+    return_code: int = 0
+    try:
+        # Configure command line parser.
+        parser: ArgumentParser = ArgumentParser(prog='wl-admin',
+            description='weight-log command line administration tool')
+        parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
+        subparsers = parser.add_subparsers()
+        admin = Admin()
+        create_init_subparser(subparsers, admin)
+        create_docker_subparser(subparsers, admin)
+        create_user_subparser(subparsers, admin)
+        create_db_subparser(subparsers, admin)
+
+        # Parse command line
+        args = parser.parse_args()
+
+        # Change to dir where this script lives.
+        path: str = os.path.dirname(sys.argv[0])
+        os.chdir(path)
+
+        # Perform command.
+        args.func(args)
+    except AttributeError as ex:
+        parser.error(f'ERROR: Too few arguments\n{str(ex)}')
+    except KeyboardInterrupt:
+        print('Ctrl-c caught. Exiting...')
+    except OSError as ex:
+        print(f'ERROR: {str(ex)}')
+        return_code = -1
+    except AdminError as ex:
+        error_message: str = str(ex)
+        if len(error_message) > 0: # Error message may have already been displayed on backend.
+            print(f'ERROR: {str(ex)}', file=sys.stderr)
+        return_code = ex.return_code
+
+    sys.exit(return_code)
+
+if __name__ == '__main__':
+    main()

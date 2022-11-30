@@ -1,0 +1,28 @@
+####################################################################################
+# Build React app to host static files with Nginx.
+####################################################################################
+
+FROM node:18-bullseye as build
+
+# Install NPM packages.
+USER root
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+
+# Build app.
+WORKDIR /app
+COPY ./public ./public/
+COPY ./src ./src/
+COPY ./.env .
+RUN npm run build
+
+####################################################################################
+# Create Nginx image that will host static files, and serve as proxy to the backend.
+####################################################################################
+
+FROM nginx
+
+COPY --from=build /app/build /usr/share/nginx/html
+

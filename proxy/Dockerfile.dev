@@ -1,0 +1,18 @@
+FROM nginx
+
+# Install Debian packages.
+USER root
+RUN set -eux; \
+    apt-get update && apt-get install -y --no-install-recommends \
+        apt-utils \
+        bash-completion \
+        iproute2 \
+        iputils-ping \
+        less \
+        net-tools \
+        procps \
+        tmux \
+        tree \
+        vim \
+        && rm -rf /var/lib/apt/lists/*
+

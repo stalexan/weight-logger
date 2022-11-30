@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VI=/usr/bin/vi
+ 
+#FILES_ALL="*.py run-* check-all service/*.py"
+FILES_CUR="wl-* backend.py service/__init__.py service/database.py service/util.py service/user.py"
+
+#FILES="$FILES_ALL"
+FILES="$FILES_CUR"
+
+$VI -p $FILES

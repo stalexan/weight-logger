@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Runs specified SQL to load sample data.
+# Usage: load-sample-data sample-data.sql
+
+CAT=/usr/bin/cat
+PSQL=/usr/bin/psql
+
+# Exit on error.
+set -eu
+
+# cd to the directory this script is in.
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ) 
+cd "$SCRIPT_DIR"
+
+# Initialize
+source ./init.sh
+
+# Load sample data. Sample data should SQL INSERT statements, one per line; e.g.
+#     INSERT INTO public.entries (id, user_id, date, weight, metric) VALUES (100, 100, '2020-01-01', 70.5, true);
+[ -f "$1" ] || errExit "Input file \"$1\" not found"
+$CAT << EOF | $PSQL -h localhost -p 5432 weight_log postgres
+\i $1
+EOF
+
+# List entries.
+#$CAT << EOF | $PSQL -h localhost -p 5432 weight_log postgres
+#SELECT * FROM entries;
+#EOF
+

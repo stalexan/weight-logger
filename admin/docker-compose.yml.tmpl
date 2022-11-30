@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  frontend:
+    build:
+      context: ../frontend
+    links:
+     - backend
+
+  backend:
+    build: ../backend
+    links:
+     - database
+    depends_on:
+     - database
+    volumes:
+     - ../backend:/opt/wl-backend
+     - ./keys:/keys
+
+  database:
+    image: postgres:14-bullseye
+    env_file:
+     - ../config/keys/keys-database.env
+    volumes:
+     - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes: 
+  db-data:
+    driver: local

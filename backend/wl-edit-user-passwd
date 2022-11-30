@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+""" Command line tool to change Weight Log user password. """
+
+# pylint: disable=invalid-name
+
+# Standard library imports
+import argparse
+import sys
+from typing import Any
+
+# Local imports
+from service import Service
+from service.error import WeightLogError
+from service.user import User, UserManager
+
+# pylint: disable=missing-function-docstring
+def main() -> None:
+    # Parse command line.
+    parser = argparse.ArgumentParser(prog='wl-edit-user-passwd',
+        description='Change Weight Log user password.')
+    parser.add_argument("username")
+    args: Any = parser.parse_args()
+
+    return_code: int = 0
+    try:
+        # Confirm user exists
+        service = Service()
+        manager: UserManager = service.user_manager
+        user: User | None = manager.get_user_from_username(args.username)
+        if user is None:
+            raise WeightLogError(f'User {args.username} not found')
+
+        # Prompt for password.
+        password = manager.prompt_for_password()
+
+        # Change password
+        manager.change_password(user.id, password)
+    except WeightLogError as ex:
+        print(f'ERROR: {ex}', file=sys.stderr)
+        return_code = ex.return_code
+    except KeyboardInterrupt:
+        print('')
+        return_code = -1
+
+    sys.exit(return_code)
+
+if __name__ == '__main__':
+    main()

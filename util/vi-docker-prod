@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VI=/usr/bin/vi
+ 
+FILES="admin/docker-compose.yml.tmpl"
+FILES+=" admin/docker-compose.prod.yml.tmpl"
+FILES+=" frontend/Dockerfile.prod"
+FILES+=" frontend/nginx.prod.conf"
+FILES+=" backend/Dockerfile"
+
+$VI -p $FILES

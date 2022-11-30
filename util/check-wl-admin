@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Checks wl-admin by running by pylint, mypy, and tests.
+
+function message() {
+    printf "$1\n"
+}
+
+function errMessage() {
+    printf "ERROR: $1\n"
+} >&2
+
+function errExit() {
+    errMessage "$1"
+    exit 1
+}
+
+# Exit on error and trace
+set -eux
+
+# cd to the directory wl-admin is in
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "${SCRIPT_DIR}/.."
+
+# Run pylint on all.
+pylint wl-admin admin/*.py backend/admin/*.py
+
+# Run mypy on all.
+mypy wl-admin admin/*.py
+mypy backend/admin/*.py
+
+# TODO
+#./run-tests
+
+echo "Success! All checks passed."

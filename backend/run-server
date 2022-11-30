@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Simple script to run Weight Log server during development. Invoke from within
+# the container that will run the server.
+# Usage: run-server
+
+# Exit on error and turn on tracing
+set -eux 
+
+# Have unicorn listen on all interfaces so Docker port mapping works.
+/usr/local/bin/docker-entrypoint.sh uvicorn --reload --host 0.0.0.0 backend:app
+

@@ -1,0 +1,39 @@
+FROM node:18-bullseye
+
+# Install Debian packages.
+USER root
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        apt-utils \
+        bash-completion \
+        htop \
+        iproute2 \
+        iputils-ping \
+        less \
+        locales \
+        net-tools \
+        tmux \
+        tree \
+        vim \
+        && rm -rf /var/lib/apt/lists/* 
+
+# Install NPM packages.
+USER root
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+
+# Install ESLint as a dev dependency only.
+RUN npm install eslint eslint-plugin-react --save-dev
+
+# Run as node user.
+USER root
+RUN set -eux; \
+    chown -R node:node /app;
+USER node
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+
+CMD ["tail", "-F", "/dev/null"]

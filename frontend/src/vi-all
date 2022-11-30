@@ -1,0 +1,14 @@
+#!/bin/bash
+
+VI=/usr/bin/vi
+
+FILES_APP_BASE="../public/index.html ./index.jsx ./App.jsx ./components/Navbar.jsx ./components/ContainerPanel.jsx"
+ 
+#FILES_ALL="index.js App.jsx App.css components/*"
+#FILES_CUR="components/EntryTablePanel.jsx components/EntryModal.jsx components/EntryGraphPanel.jsx components/SettingsModal.jsx components/LoginPanel.jsx components/PasswordModal.jsx"
+FILES_CUR="$FILES_APP_BASE"
+
+#FILES="$FILES_ALL"
+FILES="$FILES_CUR"
+
+$VI -p $FILES

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Run from within Docker container for correct Python version.
+
+# "Checks all" by running: pylint and mypy.
+
+function message() {
+    printf "$1\n"
+}
+
+function errMessage() {
+    printf "ERROR: $1\n"
+} >&2
+
+function errExit() {
+    errMessage "$1"
+    exit 1
+}
+
+# Exit on error and trace
+set -eux
+
+# cd to the directory this script is in
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "$SCRIPT_DIR"
+
+# Run pylint on all.
+pylint *.py wl-* */*.py
+
+# Run mypy on all.
+#MYPY_FLAGS="--check-untyped-defs"
+MYPY_FLAGS=""
+mypy $MYPY_FLAGS *.py */*.py
+mypy $MYPY_FLAGS wl-add-user
+mypy $MYPY_FLAGS wl-delete-user
+mypy $MYPY_FLAGS wl-edit-user-passwd
+mypy $MYPY_FLAGS wl-list-users
+
+./run-tests
+
+echo "Success! All checks passed."

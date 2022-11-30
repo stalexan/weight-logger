@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.prod
+    image: wl-frontend-prod
+    container_name: wl-frontend-prod
+    hostname: wl-frontend-prod
+    volumes:
+     - ../frontend/nginx.prod.conf:/etc/nginx/nginx.conf
+
+  backend:
+    image: wl-backend-prod
+    container_name: wl-backend-prod
+    hostname: wl-backend-prod
+
+  database:
+    container_name: wl-db-prod
+    hostname: wl-db-prod
+
+volumes: 
+  db-data:
+    name: wl-db-vol-prod

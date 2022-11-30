@@ -1,0 +1,15 @@
+#!/bin/bash
+
+VI=/usr/bin/vi
+
+# cd to the directory wl-admin is in
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "${SCRIPT_DIR}/.."
+ 
+#FILES_ALL="wl-admin admin/*.py"
+FILES_CUR="wl-admin admin/*.py"
+
+#FILES="$FILES_ALL"
+FILES="$FILES_CUR"
+
+$VI -p $FILES

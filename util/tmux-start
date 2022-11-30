@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# tmux session name
+SESSION=${USER}-weight-log
+
+# Attach to session if it's already running.
+tmux has-session -t $SESSION >& /dev/null
+if [ $? -eq 0 ]; then
+	echo "Session $SESSION exists. Attaching..."
+	sleep 1
+	tmux -2 attach -t $SESSION
+	exit 0;
+fi
+
+# Create a new detached session.
+tmux -2 new-session -d -s $SESSION
+
+# First window is created automatically. Use it for git and misc.
+tmux rename-window -t $SESSION:0 weight-log
+
+# Create admin-edit window.
+tmux new-window -t $SESSION:1 -n admin-edit
+tmux send-keys -t $SESSION:1 ./util/vi-admin ENTER
+
+# Create docker-run window.
+tmux new-window -t $SESSION:2 -n docker-run
+
+# Create docker-edit window.
+tmux new-window -t $SESSION:3 -n docker-edit
+tmux send-keys -t $SESSION:3 ./util/vi-docker-dev ENTER
+
+# Create backend-run window.
+tmux new-window -t $SESSION:4 -n backend-run
+tmux send-keys -t $SESSION:4 cd SPACE backend ENTER
+
+# Create backend-edit window.
+tmux new-window -t $SESSION:5 -n backend-edit
+tmux send-keys -t $SESSION:5 cd SPACE backend ENTER
+tmux send-keys -t $SESSION:5 ./vi-all ENTER
+
+# Create db-run window.
+tmux new-window -t $SESSION:6 -n db-run
+tmux send-keys -t $SESSION:6 cd SPACE database ENTER
+
+# Create db-edit window.
+tmux new-window -t $SESSION:7 -n db-edit
+tmux send-keys -t $SESSION:7 cd SPACE database ENTER
+tmux send-keys -t $SESSION:7 ./vi-all ENTER
+
+# Create frontend-run window.
+tmux new-window -t $SESSION:8 -n frontend-run
+tmux send-keys -t $SESSION:8 cd SPACE frontend ENTER
+
+# Create frontend-edit window.
+tmux new-window -t $SESSION:9 -n frontend-edit
+tmux send-keys -t $SESSION:9 cd SPACE frontend/src ENTER
+tmux send-keys -t $SESSION:9 ./vi-all ENTER
+
+# Attach to tmux.
+tmux -2 attach -t $SESSION
+

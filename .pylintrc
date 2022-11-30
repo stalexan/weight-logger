@@ -1,0 +1,7 @@
+# C0103: Module name "wl-admin" doesn't conform to snake_case naming style (invalid-name)
+# E0611: No name 'admin' in module 'backend' (no-name-in-module)
+# E0401: Unable to import 'backend.admin' (import-error)
+
+[MESSAGES CONTROL]
+disable=C0103,E0401,E0611
+

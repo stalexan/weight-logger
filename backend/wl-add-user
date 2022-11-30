@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+""" Command line tool to add Weight Log user. """
+
+# pylint: disable=invalid-name
+
+# Standard library imports
+from argparse import ArgumentParser
+import sys
+from typing import Any
+
+# Local imports
+from admin import config_parser_for_add_user
+from service import Service
+from service.error import WeightLogError
+from service.user import UserManager
+
+# pylint: disable=missing-function-docstring
+def main() -> None:
+    # Parse command line.
+    parser = ArgumentParser(prog='wl-add-user', description='Add Weight Log user.')
+    config_parser_for_add_user(parser)
+    args: Any = parser.parse_args()
+
+    return_code: int = 0
+    try:
+        # Prompt for password.
+        password = UserManager.prompt_for_password()
+
+        # Add user.
+        service = Service()
+        service.user_manager.add_user(args.username, not args.english, args.goal, password)
+    except WeightLogError as ex:
+        print(f'ERROR: {ex}', file=sys.stderr)
+        return_code = ex.return_code
+    except KeyboardInterrupt:
+        print('')
+        return_code = -1
+
+    sys.exit(return_code)
+
+if __name__ == '__main__':
+    main()

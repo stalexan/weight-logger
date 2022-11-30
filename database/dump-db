@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Runs Postgres pg_dump to create a SQL dump of Weight Log database.
+# Usage: dump-db > weight-log-db-dump.sql
+
+PGDUMP=/usr/bin/pg_dump
+
+# Exit on error.
+set -eu
+
+# cd to the directory this script is in.
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ) 
+cd "$SCRIPT_DIR"
+
+# Initialize
+source ./init.sh
+
+# Delete DB and DB user.
+$PGDUMP -h localhost -p 5432 -U postgres weight_log
+

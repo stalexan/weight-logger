@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+""" Command line tool to restore database. """
+
+# pylint: disable=invalid-name
+
+# Standard library imports
+from argparse import ArgumentParser
+import sys
+from typing import Any
+
+# Local imports
+from service import Service
+from service.error import WeightLogError
+
+# pylint: disable=missing-function-docstring
+def main() -> None:
+    # Parse command line.
+    parser = ArgumentParser(prog='wl-db-restore', description='Restore Weight Log database.')
+    parser.add_argument("file", type=str, help='Source file for restore')
+    args: Any = parser.parse_args()
+
+    return_code: int = 0
+    try:
+        # Confirm restore first if there's existing data that would be overwritten.
+        service = Service()
+        if service.has_data():
+            response: str = input('Delete existing data and restore? (y/N) ')
+            if response.lower() != 'y':
+                return
+
+        # Restore
+        service.database.restore(args.file)
+    except WeightLogError as ex:
+        print(f'ERROR: {ex}', file=sys.stderr)
+        return_code = ex.return_code
+    except KeyboardInterrupt:
+        print('')
+        return_code = -1
+
+    sys.exit(return_code)
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+
+""" Command line tool to delete a Weight Log user. """
+
+# pylint: disable=invalid-name
+
+# Standard library imports
+import argparse
+import sys
+from typing import Any
+
+# Local imports
+from service import Service
+from service.error import WeightLogError
+
+# pylint: disable=missing-function-docstring
+def main() -> None:
+    # Parse command line
+    parser = argparse.ArgumentParser(prog='wl-delete-user',
+        description='Delete Weight Log user.')
+    parser.add_argument("username")
+    args: Any = parser.parse_args()
+
+    # Delete user.
+    return_code: int = 0
+    try:
+        service = Service()
+        service.user_manager.delete_user(args.username)
+    except WeightLogError as ex:
+        print(f'ERROR: {ex}', file=sys.stderr)
+        return_code = ex.return_code
+    except KeyboardInterrupt:
+        print('')
+        return_code = -1
+
+    sys.exit(return_code)
+
+if __name__ == '__main__':
+    main()

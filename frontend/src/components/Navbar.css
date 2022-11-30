@@ -1,0 +1,35 @@
+nav {
+  display: flex;
+  flex-direction: row;
+}
+
+.wl-navbar {
+  background-color: MediumSeaGreen;
+}
+
+.wl-navbar-nav {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Place links on right. */
+  padding-right: 0.8em;
+}
+
+.wl-navbar-brand {
+  padding-left: 1em;
+}
+
+.wl-nav-link {
+  display: block;
+  padding: 0rem 0.75rem;
+  color: white;
+  text-decoration: none;
+}
+
+.wl-nav-link:hover {
+  cursor: pointer;
+  color: white;
+}
+
+#wl-nav-dropdown {
+  color: white;
+}

@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  proxy:
+    build:
+      context: ../proxy
+      dockerfile: Dockerfile.dev
+    image: wl-proxy-dev
+    container_name: wl-proxy-dev
+    hostname: wl-proxy-dev
+    volumes:
+     - ../proxy/nginx.dev.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"             # Application URL: <http://localhost:80/>
+    links:
+     - frontend
+     - backend
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    image: wl-frontend-dev
+    init: true
+    container_name: wl-frontend-dev
+    hostname: wl-frontend-dev
+    volumes:
+      - ../frontend:/app      # Make source files on host available within container.
+      - /app/node_modules    # Use packages that were installed when image was created.
+
+  backend:
+    image: wl-backend-dev
+    container_name: wl-backend-dev
+    hostname: wl-backend-dev
+    init: true
+    ports:
+      - "8000:8000"    # Surfaces OpenAPI docs. URL: <http://localhost:8000/>
+    command: tail -F /dev/null
+
+  database:
+    container_name: wl-db-dev
+    hostname: wl-db-dev
+
+volumes: 
+  db-data:
+    name: wl-db-vol-dev

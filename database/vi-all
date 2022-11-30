@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VI=/usr/bin/vi
+ 
+FILES_ALL="dump-db delete-db load-sample-data init.sh"
+#FILES_CUR="delete-db load-sample-data"
+
+FILES="$FILES_ALL"
+#FILES="$FILES_CUR"
+
+$VI -p $FILES

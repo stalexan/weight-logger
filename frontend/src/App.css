@@ -1,0 +1,14 @@
+main {
+  height: 100vh;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+#navbar {
+  flex: 0 1 auto;
+}
+

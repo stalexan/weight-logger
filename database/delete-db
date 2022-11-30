@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Deletes Weight Log database and user.
+# Usage: delete-db
+
+CAT=/usr/bin/cat
+PSQL=/usr/bin/psql
+
+# Exit on error.
+set -eu
+
+# cd to the directory this script is in.
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ) 
+cd "$SCRIPT_DIR"
+
+# Initialize
+source ./init.sh
+
+# Delete DB and DB user.
+$CAT << EOF | $PSQL -h localhost -p 5432 -U postgres
+/* Delete database and database user */
+DROP DATABASE IF EXISTS weight_log;
+DROP USER IF EXISTS weight_log_user;
+EOF
+
