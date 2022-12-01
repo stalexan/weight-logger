@@ -171,7 +171,7 @@ A development deployment creates 4 Docker containers:
 ```mermaid
 graph TD;
     A("proxy (Nginx)")-->B("frontend (Node)");
-    B-->C("backend (Python)");
+    A-->C("backend (Python)");
     C-->D("database (PostgreSQL)");   
 ```
 
