@@ -10,6 +10,7 @@ services:
     hostname: wl-frontend-prod
     volumes:
      - ../frontend/nginx.prod.conf:/etc/nginx/nginx.conf
+    HOST-PORT
 
   backend:
     image: wl-backend-prod

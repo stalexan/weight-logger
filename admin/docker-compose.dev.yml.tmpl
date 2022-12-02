@@ -11,8 +11,7 @@ services:
     hostname: wl-proxy-dev
     volumes:
      - ../proxy/nginx.dev.conf:/etc/nginx/nginx.conf
-    ports:
-      - "80:80"             # Application URL: <http://localhost:80/>
+    HOST-PORT
     links:
      - frontend
      - backend

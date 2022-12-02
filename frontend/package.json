@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "homepage": "https://www.alexan.org/weight-logger",
+  "homepage": "http://localhost",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

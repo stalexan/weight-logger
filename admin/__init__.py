@@ -26,6 +26,7 @@ import grp
 import json
 import math
 import os
+import re
 import secrets
 import shutil
 import stat
@@ -33,7 +34,7 @@ import string
 from subprocess import CompletedProcess, Popen, run
 from subprocess import DEVNULL, PIPE
 from subprocess import CalledProcessError, SubprocessError
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 from argparse import Namespace
 
 # 3rd-party imports
@@ -337,22 +338,56 @@ class Admin:
                 f'{str(ex)}') from ex
 
     @staticmethod
-    def __copy_compose_file_from_template(filename: str) -> None:
+    def __create_compose_paths(filename: str) -> Tuple[str, str]:
+        """ Create paths from compose filename, for source template file and
+        dest compose file. """
+
+        return (f'admin/{filename}.tmpl', f'{CONFIG_DIR_NAME}/{filename}')
+
+    @staticmethod
+    def __copy_compose_file(filename: str) -> None:
         """ Copy compose file template to config dir. """
         try:
-            shutil.copy(f'admin/{filename}.tmpl', f'{CONFIG_DIR_NAME}/{filename}')
+            (template_path, dest_path) = Admin.__create_compose_paths(filename)
+            shutil.copy(template_path, dest_path)
         except OSError as ex:
             raise AdminError(
                 f'Count not create docker file {filename}.\n{str(ex)}') from ex
 
     @staticmethod
-    def __init_create_docker_compose_files(network: str) -> None:
+    def __create_deployment_compose_file(filename: str, http_host_port: Optional[int]) -> None:
+        """ Create deployment specific compose file. """
+
+        # Create docker-network.yml.
+        try:
+            # Read template contents.
+            (template_path, dest_path) = Admin.__create_compose_paths(filename)
+            content: str
+            with open(template_path) as template_file:
+                content = template_file.read()
+
+            # Configure ports section.
+            pat = re.compile(r'\s*HOST-PORT')
+            replacement: str = "" if http_host_port is None else \
+                f'\n    ports:\n      - "{http_host_port}:80"'
+            content = pat.sub(replacement, content)
+
+            # Save results.
+            with open(dest_path, 'a') as compose_file:
+                compose_file.write(content)
+        except OSError as ex:
+            print(f'Unable to create {filename}\n{str(ex)}')
+
+    @staticmethod
+    def __init_create_docker_compose_files(network: str, http_host_port: Optional[int]) -> None:
         """ Create docker compose files. """
 
-        # Create compose files that are just copies of templates.
-        Admin.__copy_compose_file_from_template("docker-compose.yml")
-        Admin.__copy_compose_file_from_template("docker-compose.dev.yml")
-        Admin.__copy_compose_file_from_template("docker-compose.prod.yml")
+        # Create docker-compose.yml.
+        Admin.__copy_compose_file("docker-compose.yml")
+
+        # Create deployment specific compose files.
+        Admin.__create_deployment_compose_file("docker-compose.dev.yml", http_host_port)
+        Admin.__create_deployment_compose_file("docker-compose.prod.yml", http_host_port)
 
         # Create docker-network.yml.
         network_filename: str = 'docker-network.yml'
@@ -433,7 +468,7 @@ class Admin:
             raise AdminError(f'Count not open {self.config_filename}.\n{str(ex)}') from ex
 
         # Create Docker compose files.
-        Admin.__init_create_docker_compose_files(args.network)
+        Admin.__init_create_docker_compose_files(args.network, args.http_host_port)
 
     def __assemble_compose_files_list(self, depl_env: Optional[str] = None) -> list[str]:
         """ Assemble list of files used to invoke docker compose.

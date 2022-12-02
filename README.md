@@ -77,7 +77,7 @@ run over HTTP, without a proxy or TLS encryption. Substitute the name of your
 server in place of HOMEPAGE (e.g. `http://www.myserver.com`):
 
 <pre>
-wl-admin init prod --homepage HOMEPAGE --http-port 80
+wl-admin init prod --homepage HOMEPAGE --http-host-port 80
 </pre>
 
 Weight Logger will then be available at the URL <http://www.myserver.com>. 
@@ -188,7 +188,7 @@ container.
 To configure a development deployment run:
 
 <pre>
-wl-admin init dev --homepage http://localhost 
+wl-admin init dev --homepage http://localhost --http-host-port 80
 </pre>
 
 Weight Logger will then be available at the URL <http://localhost>. 

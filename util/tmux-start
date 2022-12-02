@@ -20,7 +20,7 @@ tmux rename-window -t $SESSION:0 weight-log
 
 # Create admin-edit window.
 tmux new-window -t $SESSION:1 -n admin-edit
-tmux send-keys -t $SESSION:1 ./util/vi-admin ENTER
+tmux send-keys -t $SESSION:1 ./util/vi-wl-admin ENTER
 
 # Create docker-run window.
 tmux new-window -t $SESSION:2 -n docker-run

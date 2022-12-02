@@ -38,6 +38,7 @@ def create_init_subparser(subparsers, admin: Admin) -> None:
     init_parser.add_argument('env', type=str, choices=['dev', 'prod'])
     init_parser.add_argument("--homepage", type=str, required=True, help='Weight Log homepage')
     init_parser.add_argument("--network", type=str, help='Docker bridge network to join')
+    init_parser.add_argument("--http-host-port", type=int, help='Host port to listen on')
     init_parser.set_defaults(func=admin.do_init)
 
 def create_docker_subparser(subparsers, admin: Admin) -> None:
