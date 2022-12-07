@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 
 // Local imports
 import { makeHttpRequest } from '../shared';
+import UserModal from './UserModal';
 
 // CSS imports
 import './LoginPanel.css';
@@ -33,6 +34,16 @@ export default function LoginPanel(props) {
   const [password, setPassword] = useState();
   const [isSignInButtonEnabled, setIsSignInButtonEnabled] = useState(true);
   const [errorMessage, setErrorMessage] = useState();
+
+  // Modal dialog to sign up.
+  const [signUpModalIsVisible, setSignUpModalIsVisible] = useState(false);
+  const [signUpModalKey, setSignUpModalKey] = useState(0);
+
+  function showSignUpModal() {
+    // Show dialog.
+    setSignUpModalKey((key) => key + 1); // Cause dialog to reinitialize.
+    setSignUpModalIsVisible(true);
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -88,9 +99,19 @@ export default function LoginPanel(props) {
             onChange={event => setPassword(event.target.value)} />
           <label htmlFor="password-input">Password</label>
         </div>
-        <button className="w-100 btn btn-lg btn-secondary" type="submit"
-          disabled={!isSignInButtonEnabled}>Sign in</button>
+        <button name="signInButton" className="w-100 btn btn-lg btn-secondary" type="submit"
+          disabled={!isSignInButtonEnabled}>Sign In</button>
       </form>
+      <hr />
+      <button className="w-100 btn btn-lg btn-secondary"
+        onClick={() => { showSignUpModal(); }}>Sign Up</button>
+
+      {/* Modal dialog to sign up. */}
+      <UserModal
+        isForSettings={false}
+        show={signUpModalIsVisible}
+        modalKey={signUpModalKey}
+        onHide={ () => setSignUpModalIsVisible(false) } />
     </div>
   )
 }

@@ -27,7 +27,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 // Local imports
 import PasswordModal from './PasswordModal';
-import SettingsModal from './SettingsModal';
+import UserModal from './UserModal';
 
 // CSS imports
 import "bootstrap/dist/css/bootstrap.css";
@@ -76,7 +76,8 @@ export default function Navbar(props) {
     modals = 
       <div>
         {/* Modal dialog to change user settings. */}
-        <SettingsModal 
+        <UserModal
+          isForSettings={true}
           show={settingsModalIsVisible}
           modalKey={settingsModalKey}
           onHide={ () => setSettingsModalIsVisible(false) }

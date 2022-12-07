@@ -113,11 +113,14 @@ export function convertUnits(isMetric, toMetric, value) {
   // Convert.
   const KG_PER_LB = 0.45359237;
   let newValue = toMetric ?
-     value * KG_PER_LB : // lb to kg
-     value / KG_PER_LB;  // kg to lb
+    value * KG_PER_LB : // lb to kg
+    value / KG_PER_LB;  // kg to lb
 
-  // Round.
-  newValue = newValue.toFixed(toMetric ? 1 : 0);
+  // Round, or set to 0 if NaN.
+  if (newValue === newValue)
+    newValue = newValue.toFixed(toMetric ? 1 : 0);
+  else
+    newValue = 0;
 
   return newValue;
 }

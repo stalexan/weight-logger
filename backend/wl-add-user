@@ -13,7 +13,7 @@ from typing import Any
 from admin import config_parser_for_add_user
 from service import Service
 from service.error import WeightLogError
-from service.user import UserManager
+from service.user import User, UserManager
 
 # pylint: disable=missing-function-docstring
 def main() -> None:
@@ -29,7 +29,11 @@ def main() -> None:
 
         # Add user.
         service = Service()
-        service.user_manager.add_user(args.username, not args.english, args.goal, password)
+        service.add_user(User(
+            username = args.username,
+            metric = not args.english,
+            goal_weight = args.goal,
+            password = password))
     except WeightLogError as ex:
         print(f'ERROR: {ex}', file=sys.stderr)
         return_code = ex.return_code

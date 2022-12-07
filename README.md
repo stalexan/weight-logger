@@ -13,9 +13,8 @@ And the graph looks like this:
 
 These screenshots are from sample data available in a running version of the
 app, found here: [Weight Logger](https://www.alexan.org/weight-logger/). You're
-welcome to try it out. The username is `Garfield`, and the password is
-`foobar`. Feel free to make any changes. The sample data is regularly restored
-from a backup.
+welcome to try it out. Sample data can be found by logging in as user
+`Garfield` password `foobar`.  Or, create an account by clicking _Sign Up_.
 
 Usage
 ---

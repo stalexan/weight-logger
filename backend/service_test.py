@@ -30,7 +30,13 @@ def test_create_user():
     # Create user.
     goal_weight: float = 68
     metric: bool = False
-    service.user_manager.add_user(USERNAME, metric, goal_weight, PASSWORD)
+    service.add_user(User(
+        id = 0,
+        username = USERNAME,
+        metric = metric,
+        units_name = "",
+        goal_weight = goal_weight,
+        password = PASSWORD))
 
     # Verify user was created.
     users: list[User] = service.user_manager.get_users()

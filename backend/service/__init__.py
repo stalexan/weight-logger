@@ -123,6 +123,13 @@ class Service:
         except WeightLogError as ex:
             raise create_http_ex_from_weight_log_error(ex) from ex
 
+    def add_user(self, new_user: User) -> None:
+        """ Add new user. """
+        try:
+            self.user_manager.add_user(new_user)
+        except WeightLogError as ex:
+            raise create_http_ex_from_weight_log_error(ex) from ex
+
     def update_user(self, authenticated_user_id: int, updated_user: User) -> User:
         """ Update user (username, metric, and goal_weight). """
         try:

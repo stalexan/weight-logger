@@ -73,6 +73,11 @@ def get_user_from_token(token: str = Depends(oauth2_scheme)) -> User:
     """ Look up user from authentication token passed in from client. """
     return service.get_user_from_token(token)
 
+@app.post("/user/")
+async def add_user(new_user: User) -> None:
+    """ Add user. """
+    service.add_user(new_user)
+
 @app.get("/user/", response_model=User)
 async def get_user(
     user: User = Depends(get_user_from_token)) -> User:

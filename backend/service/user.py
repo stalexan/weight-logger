@@ -153,27 +153,25 @@ class UserManager():
         # Hash password.
         return self.crypt_context.hash(password)
 
-    def add_user(self, username: str, metric: bool, goal_weight: float, password: str):
+    def add_user(self, new_user: User) -> None:
         """ Adds user to database. """
 
         # Check username length.
-        if len(username) > USERNAME_MAX_LEN:
+        if len(new_user.username) > USERNAME_MAX_LEN:
             raise WeightLogError(f'Maximum length for username is {USERNAME_MAX_LEN}')
 
         # Check and hash password.
-        password = self.check_and_hash_password(password)
+        new_user.password = self.check_and_hash_password(new_user.password)
 
         # Add user.
         try:
             with self.database.Session.begin() as session:
-                row: UserRow = UserRow(
-                    username = username,
-                    metric = metric,
-                    goal_weight = goal_weight,
-                    password = password)
+                row: UserRow = create_row_from_user(new_user)
                 session.add(row)
         except IntegrityError as ex:
-            raise WeightLogError(f'User {username} already exists') from ex
+            raise WeightLogError(
+                f'User {new_user.username} already exists',
+                status = HTTPStatus.BAD_REQUEST) from ex
         except SQLAlchemyError as ex:
             raise WeightLogError(f'Unable to add user: {ex}') from ex
 
