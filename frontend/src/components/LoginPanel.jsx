@@ -24,16 +24,17 @@ import PropTypes from 'prop-types';
 
 // Local imports
 import { makeHttpRequest } from '../shared';
+import PasswordInput from './PasswordInput';
 import UserModal from './UserModal';
 
 // CSS imports
 import './LoginPanel.css';
 
 export default function LoginPanel(props) {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isSignInButtonEnabled, setIsSignInButtonEnabled] = useState(true);
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Modal dialog to sign up.
   const [signUpModalIsVisible, setSignUpModalIsVisible] = useState(false);
@@ -91,14 +92,8 @@ export default function LoginPanel(props) {
             onChange={event => setUsername(event.target.value)} />
           <label htmlFor="username-input">Username</label>
         </div>
-        <div className="form-floating">
-          <input type="password" 
-            className="form-control" 
-            id="password-input" 
-            placeholder="Password"
-            onChange={event => setPassword(event.target.value)} />
-          <label htmlFor="password-input">Password</label>
-        </div>
+        <PasswordInput id="password-input" label="Password" 
+            password={password} setPassword={setPassword} />
         <button name="signInButton" className="w-100 btn btn-lg btn-secondary" type="submit"
           disabled={!isSignInButtonEnabled}>Sign In</button>
       </form>

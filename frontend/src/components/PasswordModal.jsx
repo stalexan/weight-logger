@@ -28,15 +28,16 @@ import Modal from 'react-bootstrap/Modal';
 
 // Local imports
 import { makeHttpRequest } from '../shared';
+import PasswordInput from './PasswordInput';
 
 // Modal dialog to change password.
 export default function PasswordModal(props) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
-  const [showPasswordsMustMatchMessage, setShowPasswordsMustMatchMessage] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [isOkButtonEnabled, setIsOkButtonEnabled] = useState(true);
-  const [serverErrorMessage, setServerErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
 
   // Close dialog.
   function closeModal() {
@@ -48,31 +49,16 @@ export default function PasswordModal(props) {
     setCurrentPassword("");
     setNewPassword("");
     setRetypePassword("");
-    setShowPasswordsMustMatchMessage(false);
+    setPasswordsMatch(true);
     setIsOkButtonEnabled(true);
-    setServerErrorMessage("");
+    setErrorMessage("");
   }, [props.modalKey]);
 
-  // Create "passwords must match" message HTML.
-  let retypeElem;
-  if (showPasswordsMustMatchMessage)
-    // Show "must match" message.
-    retypeElem = 
-      <div>
-        <input type="password" required className="form-control is-invalid" id="retypePassword" aria-describedby="retypePasswordFeedback"
-           value={retypePassword} onChange={(event) => {setRetypePassword(event.target.value);}} />
-        <div id="retypePasswordFeedback" className="invalid-feedback">Passwords must match.</div>
-      </div>
-  else
-    // No message needed.
-    retypeElem = <input type="password" required className="form-control" id="retypePassword"
-      value={retypePassword} onChange={(event) => {setRetypePassword(event.target.value);}} />
-
-  // Create server error message HTML.
-  let serverErrorMessageElem;
-  if (serverErrorMessage.length > 0) {
-    serverErrorMessageElem = <div className="alert alert-danger" role="alert">{serverErrorMessage}</div>;
-  }
+  // Create error message HTML.
+  let errorMessageElem;
+  let errorMessageId = "error-message";
+  if (errorMessage)
+    errorMessageElem = <div id={errorMessageId} className="alert alert-danger" role="alert">{errorMessage}</div>;
 
   // Handle OK click.
   async function handleOnSubmit(event) {
@@ -80,8 +66,11 @@ export default function PasswordModal(props) {
     event.preventDefault();
 
     // Check that passwords match.
-    if (newPassword != retypePassword) {
-      setShowPasswordsMustMatchMessage(true);
+    if (newPassword == retypePassword) {
+      setPasswordsMatch(true);
+    } else {
+      setPasswordsMatch(false);
+      setErrorMessage("Passwords must match.");
       return false; // Let user correct error.
     }
 
@@ -109,7 +98,7 @@ export default function PasswordModal(props) {
       console.log(error.message);
 
       // Display error in modal dialog.
-      setServerErrorMessage(error.message);
+      setErrorMessage(error.message);
     } finally {
       // Clean-up.
       document.body.style.cursor = 'default';
@@ -130,21 +119,20 @@ export default function PasswordModal(props) {
       <Modal.Body>
         <form id="passwordForm" onSubmit={handleOnSubmit}>
           <div className="mb-3">
-            <label htmlFor="currentPassword" className="form-label">Current Password</label>
-            <input type="password" required className="form-control" id="currentPassword"
-              value={currentPassword} onChange={(event) => {setCurrentPassword(event.target.value);}} />
+            <PasswordInput id="current-password-input" label="Current Password" 
+              password={currentPassword} setPassword={setCurrentPassword} />
           </div>
           <div className="mb-3">
-            <label htmlFor="newPassword" className="form-label">New Password</label>
-            <input type="password" required className="form-control" id="newPassword"
-              value={newPassword} onChange={(event) => {setNewPassword(event.target.value);}} />
+            <PasswordInput id="new-password-input" label="New Password" 
+              password={newPassword} setPassword={setNewPassword} />
           </div>
           <div className="mb-3">
-            <label htmlFor="retypePassword" className="form-label">Retype New Password</label>
-            {retypeElem}
+            <PasswordInput id="retype-password-input" label="Retype New Password" 
+              password={retypePassword} setPassword={setRetypePassword}
+              errorMessageId={passwordsMatch ? "" : errorMessageId} />
           </div>
         </form>
-        {serverErrorMessageElem}
+        {errorMessageElem}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => { closeModal(); }}>
