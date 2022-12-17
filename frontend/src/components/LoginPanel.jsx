@@ -82,17 +82,18 @@ export default function LoginPanel(props) {
   return (
     <div id="login-panel-div" className="text-center">
       { messageElement }
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="on">
         <p className="h3 mb-3">Please sign in</p>
         <div className="form-floating">
           <input type="text" 
             className="form-control"
             id="username-input"
             placeholder="Username"
+            autoComplete="on"
             onChange={event => setUsername(event.target.value)} />
           <label htmlFor="username-input">Username</label>
         </div>
-        <PasswordInput id="password-input" label="Password" 
+        <PasswordInput id="password-input" label="Password" autoComplete="on"
             password={password} setPassword={setPassword} />
         <button name="signInButton" className="w-100 btn btn-lg btn-secondary" type="submit"
           disabled={!isSignInButtonEnabled}>Sign In</button>

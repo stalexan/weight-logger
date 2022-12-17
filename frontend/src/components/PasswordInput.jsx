@@ -47,6 +47,7 @@ export default function PasswordInput(props) {
     value={props.password}
     placeholder={props.label}
     aria-describedby={ariaDescribedBy}
+    autoComplete={props.autoComplete}
     onChange={event => props.setPassword(event.target.value)} />
 
   // Create show/hide password image.
@@ -67,6 +68,7 @@ export default function PasswordInput(props) {
 }
 
 PasswordInput.propTypes = {
+  autoComplete: PropTypes.string,
   errorMessageId: PropTypes.string,
   label: PropTypes.string,
   password: PropTypes.string,
