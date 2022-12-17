@@ -92,6 +92,11 @@ async def update_user(
     """ Update User. """
     return service.update_user(authenticated_user.id, updated_user)
 
+@app.delete("/user/")
+async def delete_user(user: User = Depends(get_user_from_token)) -> None:
+    """ Delete user. """
+    service.delete_user(user.username)
+
 @app.put("/password/")
 async def change_password(
     current_password: str,

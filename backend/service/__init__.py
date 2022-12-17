@@ -130,6 +130,13 @@ class Service:
         except WeightLogError as ex:
             raise create_http_ex_from_weight_log_error(ex) from ex
 
+    def delete_user(self, username: str) -> None:
+        """ Delete user. """
+        try:
+            self.user_manager.delete_user(username)
+        except WeightLogError as ex:
+            raise create_http_ex_from_weight_log_error(ex) from ex
+
     def update_user(self, authenticated_user_id: int, updated_user: User) -> User:
         """ Update user (username, metric, and goal_weight). """
         try:

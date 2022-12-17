@@ -26,6 +26,8 @@ import PropTypes from 'prop-types';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 // Local imports
+import { makeHttpRequest } from '../shared';
+import ConfirmModal from './ConfirmModal';
 import PasswordModal from './PasswordModal';
 import UserModal from './UserModal';
 
@@ -42,6 +44,9 @@ export default function Navbar(props) {
   const [settingsModalIsVisible, setSettingsModalIsVisible] = useState(false);
   const [settingsModalKey, setSettingsModalKey] = useState(0);
 
+  // Modal dialog to confirm account deletion.
+  const [confirmDeleteAccountModalIsVisible, setConfirmDeleteAccountModalIsVisible] = useState(false);
+
   function showPasswordModal() {
     // Show dialog.
     setPasswordModalKey((key) => key + 1); // Cause dialog to reinitialize.
@@ -52,6 +57,31 @@ export default function Navbar(props) {
     // Show dialog.
     setSettingsModalKey((key) => key + 1); // Cause dialog to reinitialize.
     setSettingsModalIsVisible(true);
+  }
+
+  async function deleteAccount() {
+    try {
+      // Delete current user.
+      document.body.style.cursor = 'wait';
+      let response = await makeHttpRequest(
+          "delete user", 'user', "DELETE", null,
+          {}, props.token, props.forgetUser);
+
+      // Handle response.
+      if (response.ok) {
+        // Delete user token.
+        props.forgetUser();
+      }
+    } catch (error) {
+      document.body.style.cursor = 'default';
+
+      // Log error.
+      console.log(error.message);
+    } finally {
+      // Clean-up.
+      document.body.style.cursor = 'default';
+      setConfirmDeleteAccountModalIsVisible(false);
+    }
   }
 
   // Create navigation links and dialogs if user has logged in.
@@ -69,6 +99,7 @@ export default function Navbar(props) {
         <NavDropdown id="wl-nav-dropdown" title={`${props.user.username}`} menuVariant="dark">
            <NavDropdown.Item onClick={() => showSettingsModal() }>Settings…</NavDropdown.Item>
            <NavDropdown.Item onClick={() => showPasswordModal() }>Change Password…</NavDropdown.Item>
+           <NavDropdown.Item onClick={() => setConfirmDeleteAccountModalIsVisible(true) }>Delete Account…</NavDropdown.Item>
            <NavDropdown.Divider />
            <NavDropdown.Item onClick={() => { props.forgetUser(); }}>Logout</NavDropdown.Item>
         </NavDropdown>
@@ -93,6 +124,14 @@ export default function Navbar(props) {
           onHide={ () => setPasswordModalIsVisible(false) }
           token={props.token}
           forgetUser={props.forgetUser} />
+
+        {/* Modal dialog to confirm account deletion. */}
+        <ConfirmModal 
+          title="Delete Account"
+          message="Delete the current user's account, and all weight log entries for the account?"
+          show={confirmDeleteAccountModalIsVisible}
+          onOK={deleteAccount}
+          onCancel={() => { setConfirmDeleteAccountModalIsVisible(false); }} />
       </div>;
   }
 
