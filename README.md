@@ -213,3 +213,13 @@ Start the `backend` FastAPI server with:
 docker exec -it wl-backend-dev bash
 ./run-server
 </pre>
+
+Administration
+---
+
+The `wl-admin` command-line tool can be used to administer Weight Logger. It has support for:
+
+* Initializing a deployment with [`wl-admin init`](docs/wl-admin-init.md).
+* Managing Docker containers with [`wl-admin docker`](docs/wl-admin-docker.md).
+* Managing users with [`wl-admin user`](docs/wl-admin-user.md).
+* And, backing up and restoring the database with [`wl-admin db`](docs/wl-admin-db.md).
