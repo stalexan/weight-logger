@@ -14,14 +14,14 @@ Initializes a deployment, by creating the configuration files needed to build an
 
 **_`wl-admin init prod --homepage <HOMEPAGE> [--network <NETWORK>] [--http-host-port <HTTP_HOST_PORT>]`_**
 
-Initializes a production deployment, with the containers needed to run Weight
+Initializes a __production deployment__, with the containers needed to run Weight
 Logger in production mode. An Nginx container hosts a prebuilt version of the
 React application, and proxies calls to a Python FastAPI container that runs
 the backend.
 
 **_`wl-admin init dev --homepage <HOMEPAGE> [--network <NETWORK>] [--http-host-port <HTTP_HOST_PORT>]`_**
 
-Initializes a development deployment, with the containers needed to run Weight
+Initializes a __development deployment__, with the containers needed to run Weight
 Logger in development mode. An Nginx container proxies calls to a Node
 container that runs the frontend React application, and to a Python FastAPI
 container that runs the backend.
@@ -38,7 +38,7 @@ Specifies the homepage for the application.
 Specifies the Docker bridge network to join, if any. This is useful for
 production deployments where a proxy to the application runs in another Docker
 container.  The network for the proxy Docker container is specified here, and
-then traffic is forwarded to the Weight Logger frontend.
+traffic is then forwarded to the Weight Logger frontend.
 
 If this option isn't specified, the application runs in a Docker network called
 `wl-network`.
@@ -54,7 +54,7 @@ EXAMPLES
 ---
 
 Initialize a production deployment to be available from the URL
-`http://www.foobar.com`, and run on run on port 80 of `www.foobar.com`:
+`http://www.foobar.com`, and run on port 80 of `www.foobar.com`:
 
 ```sh
 wl-admin init prod --homepage http://www.foobar.com --http-host-port 80

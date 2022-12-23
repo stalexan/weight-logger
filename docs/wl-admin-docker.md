@@ -1,6 +1,6 @@
 NAME
 ---
-wl-admin-docker — Manages the docker containers.
+wl-admin-docker — Manage docker containers.
 
 SYNOPSIS
 ---
