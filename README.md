@@ -63,8 +63,9 @@ virtualenv to install its dependencies:
 ```sh
 (mkdir -p ~/.venv && cd ~/.venv && python3 -m venv weight-logger)
 source ~/.venv/weight-logger/bin/activate
+pip install pip-tools
 cd weight-logger
-pip install -r requirements.txt
+pip-sync
 ```
 
 There are two types of deployments, or installs: development and production.
