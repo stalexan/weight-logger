@@ -531,6 +531,7 @@ class Admin:
             [ 'build', '--build-arg', f'ENV={self.depl_env}' ]
         if args.pull:
             command_args = command_args + ["--pull", "--no-cache"]
+        #command_args = command_args + ["--progress=plain"]
 
         # Build images.
         run_command(command_args)

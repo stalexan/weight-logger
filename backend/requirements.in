@@ -1,0 +1,15 @@
+argon2_cffi
+fastapi[all]
+loguru
+matplotlib
+mypy
+passlib
+psycopg2
+pydantic
+pylint
+pytest
+python-jose
+python-multipart
+sqlalchemy
+tabulate
+types-tabulate

@@ -29,30 +29,6 @@ RUN set -eux; \
     groupadd wls; \
     useradd --gid wls --create-home --shell /bin/bash wls;
 
-# Install pip dependencies.
-USER wls
-RUN set -eux; \
-    pip install --no-warn-script-location \
-        argon2_cffi \
-        fastapi[all] \
-        loguru \
-        matplotlib \
-        mypy \
-        passlib \
-        psycopg2 \
-        pydantic \
-        pylint \
-        pytest \
-        python-jose \
-        python-multipart \
-        sqlalchemy \
-        tabulate \
-        types-tabulate;
-ENV PATH /home/wls/.local/bin:$PATH
-
-# Install any available types.
-#RUN mypy --install-types
-
 # Set the locale
 USER root
 RUN set -eux; \
@@ -64,9 +40,15 @@ ENV LANG en_US.utf8
 USER wls
 ENV USER=wls
 
-# Create app directory.
+# Install pip dependencies.
 USER wls
 WORKDIR /opt/wl-backend
+RUN set -eux; \
+    pip install --no-warn-script-location pip-tools;
+ENV PATH /home/wls/.local/bin:$PATH
+COPY requirements.txt ./
+RUN set -eux; \
+    pip-sync;
 
 # Install entrypoint.
 USER root
