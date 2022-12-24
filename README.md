@@ -57,8 +57,15 @@ git clone https://github.com/stalexan/weight-logger.git
 ```
 
 Weight Logger has a command line administration tool called `wl-admin` that can
-be used to install Weight Logger. Get it running by creating a Python
-virtualenv to install its dependencies:
+be used to install Weight Logger. To get it running on a Debian based machine,
+install its dependencies with:
+
+```sh
+apt-get install python3-validators
+```
+
+Or on a non-Debian based machine, install `wl-admin` dependencies with pip, in
+a Python virtualenv:
 
 ```sh
 (mkdir -p ~/.venv && cd ~/.venv && python3 -m venv weight-logger)
