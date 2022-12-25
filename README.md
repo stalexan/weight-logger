@@ -12,9 +12,9 @@ And the graph looks like this:
 <img src="https://user-images.githubusercontent.com/2266363/204883586-71594c5e-881a-49b8-950c-09863ad0ba19.png" />
 
 These screenshots are from sample data available in a running version of the
-app, found here: [Weight Logger](https://www.alexan.org/weight-logger/). You're
+app found here: [Weight Logger](https://www.alexan.org/weight-logger/). You're
 welcome to try it out. Sample data can be found by logging in as user
-`Garfield` password `foobar`.  Or, create an account by clicking _Sign Up_.
+`Garfield` password `foobar`.  Or, you can create an account by clicking _Sign Up_.
 
 Usage
 ---
@@ -22,9 +22,9 @@ Usage
 Click _Table_ and _Graph_ in the upper right to switch between viewing the
 table and graph.
 
-The graph shows a "goal weight", as a green dashed line. To change the goal
-weight, click the username (_Garfield_) and then _Settings..._ to bring up the 
-Settings dialog.
+The graph shows goal weight as a green dashed line. To change the goal weight,
+click the username (_Garfield_) and then _Settings..._ to bring up the Settings
+dialog.
 
 <img src="https://user-images.githubusercontent.com/2266363/204884149-3432d8b5-08b0-4299-a66f-90e59889ddc8.png" />
 
@@ -64,8 +64,8 @@ install its dependencies with:
 apt-get install python3-validators
 ```
 
-Or on a non-Debian based machine, install `wl-admin` dependencies with pip, in
-a Python virtualenv:
+Or on a non-Debian based machine, the dependencies can be installed with pip,
+in a Python virtualenv:
 
 ```sh
 (mkdir -p ~/.venv && cd ~/.venv && python3 -m venv weight-logger)
@@ -75,30 +75,29 @@ cd weight-logger
 pip-sync
 ```
 
-There are two types of deployments, or installs: development and production.
+There are two types of installs, or deployments: development and production.
 Here we'll do a production deployment. The next section on
 [Development](#development) will do a development deployment.
 
-The following command will initialize a simple production deployment that will
-run over HTTP, without a proxy or TLS encryption. Substitute the name of your
-server in place of HOMEPAGE (e.g. `http://www.myserver.com`):
+The following command will initialize a simple production deployment, that runs
+over HTTP. Substitute the name of your server in place of HOMEPAGE (e.g.  `http://www.myserver.com`):
 
 <pre>
 wl-admin init prod --homepage HOMEPAGE --http-host-port 80
 </pre>
 
-Weight Logger will then be available at the URL <http://www.myserver.com>. 
+Weight Logger will then be available at the URL `http://www.myserver.com`. 
 
 This is the simplest type of production deployment, although not recommended,
-since passwords and authentication tokens are sent in the clear. It can be
-a good way to get started and try things out, though.
+since its just HTTP and passwords and authentication tokens are sent in the
+clear. It can be a good way to get started and try things out, though.
 
-A proxy is needed to provide TLS encryption. Weight Logger doesn't provide
-a TLS proxy, but a web server such as Nginx can be configured as one, with
-Let's Encrypt certificates.
+A proxy is needed to provide encryption, using HTTPS and TLS. Weight Logger
+doesn't provide a proxy for this, but a web server such as Nginx can be
+configured as one, with Let's Encrypt certificates.
 
-Let's assume we have a TLS proxy on the machine that runs Weight Logger, and
-it redirects the URL <https://www.myserver.com/weight-logger> to port 8080.
+Assuming we have a TLS proxy on the machine that runs Weight Logger, and
+it redirects traffic to `https://www.myserver.com/weight-logger` to port 8080.
 The command to configure Weight Logger would be:
 
 <pre>
@@ -109,17 +108,17 @@ The `--http-host-port` parameter configures Weight Logger to listen on port
 8080 of the host machine.
 
 Another possibility for a TLS proxy would be to have it run inside another
-Docker container.  For this use the `--network NETWORK` parameter instead of
-`--http-host-port`, with `NETWORK` set to the name of the Docker network the
-TLS proxy runs on. This will cause Weight Logger to run use the same network,
-and be visible to the proxy:
+Docker container.  For this, use the `--network NETWORK` parameter instead of
+`--http-host-port`. Set `NETWORK` to the name of the Docker network the TLS
+proxy runs on. This will cause Weight Logger use the same network, and be
+visible to the proxy:
 
 <pre>
 wl-admin init prod --homepage https://www.myserver.com/weight-logger --network NETWORK
 </pre>
 
 The TLS proxy in the Docker container should be configured to forward
-<https://www.myserver.com/weight-logger> to <http://frontend/>.
+`https://www.myserver.com/weight-logger` to `http://frontend/`.
 
 Next we want to build the Docker containers. This is done with:
 
@@ -135,17 +134,16 @@ wl-admin docker up
 
 Weight Logger is now running.
 
-We'll want to create a user Let's create the user Garfield with a goal weight
-of 110 lb:
+Let's create a user called Garfield, with a goal weight of 110 lb:
 
 <pre>
 wl-admin user add dev --english --goal 110 Garfield
 </pre>
 
 The parameter `--english` says to use pounds as units instead of kilograms (the
-default), and `--goal 110` sets the initial goal weight to 110 pounds.
+default), and `--goal 110` sets the initial goal weight to be 110 pounds.
 
-Weight Logger is now up and running, and user Garfield can now login and start
+Weight Logger is now up and running, and user Garfield can login and start
 adding weight measurements.
 
 Development
@@ -154,7 +152,7 @@ Development
 In the previous section we created a production deployment. In this section
 we'll create a development deployment.
 
-A production deployment creates 3 Docker containers:
+The production deployment we just created has 3 Docker containers:
 
 ```mermaid
 graph TD;
@@ -162,18 +160,18 @@ graph TD;
     B-->C("database (PostgreSQL)");
 ```
 
-The production containers are:
+The containers are:
 
 * `frontend`: An Nginx container that surfaces the frontend. The frontend is
   a React app that's been turned into static files using `npm build`.  The
   `frontend` container also proxies calls to the `backend` container. Any URL
-  that starts with `backend/` is forwarded to the `backend`.
+  that starts with `backend/` is forwarded to the `backend` container.
 * `backend`: A Python container that surfaces the backend. The backend is
   a REST application written in Python using FastAPI.
 * `database`: A PostgreSQL container that runs the database, where user and
   weight entry data is stored.
 
-A development deployment creates 4 Docker containers:
+The development deployment that we'll now create has 4 Docker containers:
 
 ```mermaid
 graph TD;
@@ -192,30 +190,30 @@ The `proxy` container is an Nginx container that proxies HTTP calls to either
 forwarded to the `backend` container, while all others go to the `frontend`
 container.
 
-To configure a development deployment run:
+We can configure a development deployment with:
 
 <pre>
 wl-admin init dev --homepage http://localhost --http-host-port 80
 </pre>
 
-Weight Logger will then be available at the URL <http://localhost>. 
+This will make Weight Logger available at the URL `http://localhost`. 
 
-Build and start the containers with the same commands used for the production deployment:
+To build and start the containers we use the same commands as before:
 
 <pre>
 wl-admin docker build
 wl-admin docker up
 </pre>
 
-The servers within the `frontend` and `backend` of a development deployment
-need to be started manually. Start the `frontend` Node server with:
+For a development deployment, the servers within the `frontend` and `backend`
+containers need to be started manually. To start the `frontend` Node server:
 
 <pre>
 docker exec -it wl-frontend-dev bash
 npm start
 </pre>
 
-Start the `backend` FastAPI server with:
+And, to start the `backend` FastAPI server:
 
 <pre>
 docker exec -it wl-backend-dev bash
