@@ -96,7 +96,7 @@ A proxy is needed to provide encryption, using HTTPS and TLS. Weight Logger
 doesn't provide a proxy for this, but a web server such as Nginx can be
 configured as one, with Let's Encrypt certificates.
 
-Assuming we have a TLS proxy on the machine that runs Weight Logger, and
+Let's assume we have a TLS proxy on the machine that runs Weight Logger, and
 it redirects traffic to `https://www.myserver.com/weight-logger` to port 8080.
 The command to configure Weight Logger would be:
 
@@ -143,7 +143,7 @@ wl-admin user add dev --english --goal 110 Garfield
 The parameter `--english` says to use pounds as units instead of kilograms (the
 default), and `--goal 110` sets the initial goal weight to be 110 pounds.
 
-Weight Logger is now up and running, and user Garfield can login and start
+Weight Logger is now ready for use, and user Garfield can login and start
 adding weight measurements.
 
 Development
