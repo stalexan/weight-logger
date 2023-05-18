@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# select-db does a SELECT * on all weight-logger tables
+# Usage: select-db
+
+CAT=/usr/bin/cat
+PSQL=/usr/bin/psql
+
+# Exit on error.
+set -eu
+
+# cd to the directory this script is in.
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ) 
+cd "$SCRIPT_DIR"
+
+# Initialize
+source ./init.sh
+
+# Do SELECTs.
+$CAT << EOF | $PSQL -h localhost -p 5432 -U postgres
+
+--SELECT schema_name
+--FROM information_schema.schemata;
+
+--SELECT table_name
+--FROM information_schema.tables
+--WHERE table_schema = 'public'
+--AND table_type = 'BASE TABLE';
+
+\c weight_log
+SELECT * FROM users;
+SELECT * FROM entries;
+
+--SELECT * FROM entries WHERE user_id=118;
+
+EOF
+
