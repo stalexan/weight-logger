@@ -81,7 +81,8 @@ def create_run_command_error_message(
 def run_command(
     args: list[str],
     print_command: bool = True,
-    capture_output: bool = False) -> str:
+    capture_output: bool = False,
+    env_vars = {}) -> str:
     """ Run command and return stdout. """
 
     # Display command.
@@ -91,7 +92,7 @@ def run_command(
     # Run command.
     try:
         process: CompletedProcess = run(
-            args, capture_output=capture_output, encoding='utf-8', check=True)
+            args, capture_output=capture_output, encoding='utf-8', check=True, env=env_vars)
         return process.stdout
     except CalledProcessError as ex:
         raise AdminError(
@@ -534,7 +535,7 @@ class Admin:
         #command_args = command_args + ["--progress=plain"]
 
         # Build images.
-        run_command(command_args)
+        run_command(command_args, env_vars = {'DOCKER_CONTENT_TRUST': '1'})
 
     @staticmethod
     def __run_docker_list_command(args: list[str], title: str) -> str:
