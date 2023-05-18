@@ -122,5 +122,5 @@ export function convertUnits(isMetric, toMetric, value) {
   else
     newValue = 0;
 
-  return newValue;
+  return Number(newValue);
 }
