@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Runs weight-log-server tests. Invoke from within the container that runs the server.
-* Usag: run-tests
+# Usage: run-tests
 
 HEAD=/usr/bin/head
 MKTEMP=/bin/mktemp
