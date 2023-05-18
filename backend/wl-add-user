@@ -30,8 +30,10 @@ def main() -> None:
         # Add user.
         service = Service()
         service.add_user(User(
+            id = 0,
             username = args.username,
             metric = not args.english,
+            units_name = "",
             goal_weight = args.goal,
             password = password))
     except WeightLogError as ex:
