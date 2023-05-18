@@ -138,10 +138,10 @@ export default function EntryModal(props) {
         }
 
         // Convert units if units entered are not the same as units displayed in table.
-        if (updatedEntry.metric != props.user.metric) {
+        if (updatedEntry.is_metric != props.user.metric) {
           updatedEntry.weight = convertUnits(
-            updatedEntry.metric, props.user.metric, updatedEntry.weight);
-          updatedEntry.metric = props.user.metric;
+            updatedEntry.is_metric, props.user.metric, updatedEntry.weight);
+          updatedEntry.is_metric = props.user.metric;
         }
 
         // Update table.
