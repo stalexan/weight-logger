@@ -16,7 +16,7 @@ fi
 tmux -2 new-session -d -s $SESSION
 
 # First window is created automatically. Use it for git and misc.
-tmux rename-window -t $SESSION:0 weight-log
+tmux rename-window -t $SESSION:0 wl
 
 # Create admin-edit window.
 tmux new-window -t $SESSION:1 -n admin-edit
