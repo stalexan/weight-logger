@@ -2,7 +2,7 @@
 # Build React app to host static files with Nginx.
 ####################################################################################
 
-FROM node:18-bullseye as build
+FROM node:21-bookworm as build
 
 # Install NPM packages.
 USER root

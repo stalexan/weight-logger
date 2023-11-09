@@ -19,7 +19,7 @@ services:
      - ./keys:/keys
 
   database:
-    image: postgres:14-bullseye
+    image: postgres:14-bookworm
     env_file:
      - ../config/keys/keys-database.env
     volumes:

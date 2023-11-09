@@ -94,6 +94,7 @@ def test_add_entry_fail():
     """ Test that adding an entry with a duplicate date fails. """
 
     entry: WeightLogEntry = WeightLogEntry(
+        id = None,
         user_id = USER_ID,
         date = datetime.date(2022, 3, 24),
         weight = 120,
