@@ -11,11 +11,6 @@ And the graph looks like this:
 
 <img src="https://user-images.githubusercontent.com/2266363/204883586-71594c5e-881a-49b8-950c-09863ad0ba19.png" />
 
-These screenshots are from sample data available in a running version of the
-app found here: [Weight Logger](https://www.alexan.org/weight-logger/). You're
-welcome to try it out. Sample data can be found by logging in as user
-`Garfield` password `foobar`.  Or, you can create an account by clicking _Sign Up_.
-
 Usage
 ---
 
